@@ -134,7 +134,7 @@ func (x *SXOR) reconst(vects [][]byte, dataOnly bool) error {
 	}
 
 	for i := 0; i < x.DataNum+x.ParityNum; i++ {
-		if len(vects[i]) != 0 {
+		if len(vects[i]) == 0 && (i< x.DataNum || !dataOnly) {
 			return ErrTooFewShards
 		}
 	}
