@@ -1,3 +1,3 @@
-module github.com/FengMingquan-sjtu/xsor
+module github.com/FengMingquan-sjtu/sxor
 
-go 1.17
+go 1.18
