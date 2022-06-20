@@ -1,0 +1,1 @@
+Sequential XOR code
