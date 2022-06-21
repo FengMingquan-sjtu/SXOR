@@ -7,6 +7,8 @@ import (
 	"testing"
 	"fmt"
 	"reflect"
+	"time"
+	"math/rand"
 )
 
 func TestReconst(t *testing.T) {
@@ -67,3 +69,77 @@ func TestReconst(t *testing.T) {
 	}*/
 
 }
+
+
+func BenchmarkEncode(t *testing.B) {
+	x, _ := New(2, 2)
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte(rand.Intn(256))
+	}
+	vects, _ := x.Split(data)
+
+	start := time.Now()
+	x.Encode(vects)
+	end := time.Now()
+	elapsed := end.Sub(start)
+	fmt.Printf("Encode time= %v\n", elapsed)
+	fmt.Printf("Encode Speed= %v MB/s\n", float64(len(data))/1e6 / elapsed.Seconds())
+}
+
+func BenchmarkDecode0(t *testing.B) {
+	x, _ := New(2, 2)
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte(rand.Intn(256))
+	}
+	vects, _ := x.Split(data)
+	x.Encode(vects)
+
+	vects[0] = make([]byte, 0) //drop the 0-th disk
+	start := time.Now()
+	x.Reconstruct(vects)
+	end := time.Now()
+	elapsed := end.Sub(start)
+	fmt.Printf("Decode0 time= %v\n", elapsed)
+	fmt.Printf("Decode0 Speed= %v MB/s\n", float64(len(data))/1e6 / elapsed.Seconds())
+}
+
+func BenchmarkDecode1(t *testing.B) {
+	x, _ := New(2, 2)
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte(rand.Intn(256))
+	}
+	vects, _ := x.Split(data)
+	x.Encode(vects)
+
+	vects[1] = make([]byte, 0) //drop the 1-th disk
+	start := time.Now()
+	x.Reconstruct(vects)
+	end := time.Now()
+	elapsed := end.Sub(start)
+	fmt.Printf("Decode1 time= %v\n", elapsed)
+	fmt.Printf("Decode1 Speed= %v MB/s\n", float64(len(data))/1e6 / elapsed.Seconds())
+
+}
+
+func BenchmarkDecode01(t *testing.B) {
+	x, _ := New(2, 2)
+	data := make([]byte, int(1e7))
+	for i := range data {
+		data[i] = byte(rand.Intn(256))
+	}
+	vects, _ := x.Split(data)
+	x.Encode(vects)
+
+	vects[0] = make([]byte, 0) //drop the 0-th and 1-th disk
+	vects[1] = make([]byte, 0)
+	start := time.Now()
+	x.Reconstruct(vects)
+	end := time.Now()
+	elapsed := end.Sub(start)
+	fmt.Printf("Decode0+1 time= %v\n", elapsed)
+	fmt.Printf("Decode0+1 Speed= %v MB/s\n", float64(len(data))/1e6 / elapsed.Seconds())
+}
+
