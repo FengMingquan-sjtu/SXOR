@@ -1,5 +1,6 @@
 ## Sequential XOR code
 Project 1 of Big Data Processing Technologies 2022
+
 Mingquan Feng 0210339100
 
 ## How to run
